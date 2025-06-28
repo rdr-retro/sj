@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Progreso de Ahorro</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
+
+    /* Reset y fuente */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #ffffff;
+      color: #222222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 320px;
+    }
+
+    .macmini-img {
+      width: 180px;
+      margin-bottom: 30px;
+      filter: none;
+      user-select: none;
+    }
+
+    .progress-circle {
+      width: 220px;
+      height: 220px;
+      background: conic-gradient(
+        #2e7d32 calc(var(--porcentaje) * 1%),
+        #eeeeee 0
+      );
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 25px;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0 0 0 / 0.1);
+      transition: background 1.2s ease;
+    }
+
+    .progress-circle::before {
+      content: '';
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: inset 0 0 10px rgba(0 0 0 / 0.1);
+    }
+
+    .progress-text {
+      position: absolute;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #222222;
+      text-shadow: 0 0 6px rgba(255 255 255 / 0.6);
+      user-select: none;
+    }
+
+    .detalle {
+      font-size: 1.25rem;
+      color: #555555;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      user-select: none;
+      text-shadow: 0 0 3px rgba(255 255 255 / 0.4);
+      margin-bottom: 12px;
+    }
+
+    /* Estilo para la frase con efecto humo */
+    .frase-humo {
+      font-size: 1rem;
+      color: #444444;
+      font-style: italic;
+      user-select: none;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: humoIn 2s forwards ease-out;
+      max-width: 280px;
+      margin: 0 auto;
+      line-height: 1.3;
+    }
+
+    @keyframes humoIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(1.1);
+        filter: blur(4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="macmini.jpg" alt="Mac Mini" class="macmini-img" />
+    <div class="progress-circle" id="progreso">
+      <div class="progress-text" id="textoProgreso">0%</div>
+    </div>
+    <div class="detalle" id="detalleTexto">0€ de 715€</div>
+    <div class="frase-humo" id="fraseAleatoria"></div>
+  </div>
+
+  <script>
+    const objetivo = 715;
+    const ahorrado = 230; // ← cambiá este valor con tu ahorro actual
+
+    const frases = [
+      "Por lo menos tengo calefaccion.",
+      "Lo importante es participar.",
+      "La inanidad supera a la ficcion.",
+      "La culpa la tiene cecilia y por eso jesucristo ya no la quiere.",
+      "si yo bloqueo a alguien en facebook y salgo a la calle no me ve.",
+      "ruben.",
+      "6 males tienes y 7 si no comes."
+    ];
+
+    const porcentaje = Math.min((ahorrado / objetivo) * 100, 100);
+    const circulo = document.getElementById('progreso');
+    const texto = document.getElementById('textoProgreso');
+    const detalle = document.getElementById('detalleTexto');
+    const fraseElem = document.getElementById('fraseAleatoria');
+
+    // Animación suave del progreso
+    let current = 0;
+    const duration = 1200; // ms
+    const stepTime = 20;
+    const stepCount = duration / stepTime;
+    const stepIncrement = porcentaje / stepCount;
+
+    function animate() {
+      current += stepIncrement;
+      if (current > porcentaje) current = porcentaje;
+
+      circulo.style.setProperty('--porcentaje', current);
+      texto.textContent = Math.floor(current) + '%';
+
+      if (current < porcentaje) {
+        setTimeout(animate, stepTime);
+      }
+    }
+    animate();
+
+    detalle.textContent = `${ahorrado}€ de ${objetivo}€`;
+
+    // Mostrar frase aleatoria con efecto humo
+    function mostrarFraseAleatoria() {
+      const index = Math.floor(Math.random() * frases.length);
+      fraseElem.textContent = frases[index];
+    }
+
+    mostrarFraseAleatoria();
+  </script>
+</body>
+</html>
