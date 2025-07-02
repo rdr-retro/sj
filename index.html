@@ -6,7 +6,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
 
-    /* Reset y fuente */
     * {
       box-sizing: border-box;
     }
@@ -83,7 +82,6 @@
       margin-bottom: 12px;
     }
 
-    /* Estilo para la frase con efecto humo */
     .frase-humo {
       font-size: 1rem;
       color: #444444;
@@ -109,6 +107,61 @@
         filter: blur(0);
       }
     }
+
+    /* Popup estilo */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 20px 25px;
+      text-align: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      max-width: 280px;
+    }
+
+    .popup.mostrar {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .popup h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      color: #222;
+      margin-bottom: 16px;
+    }
+
+    .popup button {
+      background: #2e7d32;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      margin: 0 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .popup button:hover {
+      background: #27642a;
+    }
+
+    .popup button.no {
+      background: #888;
+    }
+
+    .popup button.no:hover {
+      background: #666;
+    }
   </style>
 </head>
 <body>
@@ -121,18 +174,26 @@
     <div class="frase-humo" id="fraseAleatoria"></div>
   </div>
 
+<!-- Popup -->
+<div class="popup" id="popupAyuda">
+  <h3>¿Te gustaría ayudarme a pagar este Mac Mini?</h3>
+  <button class="si" onclick="window.location.href='https://coff.ee/robernior'">Sí</button>
+  <button class="no" onclick="popup.style.display='none'">No</button>
+</div>
+
+
   <script>
     const objetivo = 715;
     const ahorrado = 240; // ← cambiá este valor con tu ahorro actual
 
     const frases = [
-      "Por lo menos tengo calefaccion.",
-      "Lo importante es participar.",
-      "La inanidad supera a la ficcion.",
-      "La culpa la tiene cecilia y por eso jesucristo ya no la quiere.",
-      "si yo bloqueo a alguien en facebook y salgo a la calle no me ve.",
-      "ruben.",
-      "6 males tienes y 7 si no comes."
+      "El arte digital no nace solo del talento, sino del empeño constante y una herramienta que responda a cada trazo como si fuera una extensión del alma.",
+      "Cuando la inspiración llega, necesito que mi lienzo digital esté listo, fluido, sin límites, como mi mente.",
+      "El esfuerzo del artista se mide en noches sin dormir, capas infinitas y la necesidad de que todo funcione sin pedir permiso.",
+      "Para crear sin barreras, necesito que la tecnología desaparezca y deje solo al artista y su obra.",
+      "El esfuerzo de años merece un sistema que no se interponga, sino que acompañe cada clic, cada capa, cada detalle.",
+      "No se trata solo de crear, sino de fluir; por eso necesito una herramienta que esté a la altura de mi ritmo y visión.",
+      "si yo bloqueo a alguien en facebook y salgo a la calle no me ve." // opcional, humor
     ];
 
     const porcentaje = Math.min((ahorrado / objetivo) * 100, 100);
@@ -140,10 +201,11 @@
     const texto = document.getElementById('textoProgreso');
     const detalle = document.getElementById('detalleTexto');
     const fraseElem = document.getElementById('fraseAleatoria');
+    const popup = document.getElementById('popupAyuda');
 
-    // Animación suave del progreso
+    // Animar progreso
     let current = 0;
-    const duration = 1200; // ms
+    const duration = 1200;
     const stepTime = 20;
     const stepCount = duration / stepTime;
     const stepIncrement = porcentaje / stepCount;
@@ -163,13 +225,16 @@
 
     detalle.textContent = `${ahorrado}€ de ${objetivo}€`;
 
-    // Mostrar frase aleatoria con efecto humo
     function mostrarFraseAleatoria() {
       const index = Math.floor(Math.random() * frases.length);
       fraseElem.textContent = frases[index];
     }
-
     mostrarFraseAleatoria();
+
+    // Mostrar popup a los 5 segundos
+    setTimeout(() => {
+      popup.classList.add('mostrar');
+    }, 5000);
   </script>
 </body>
 </html>
