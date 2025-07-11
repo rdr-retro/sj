@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Progreso de Ahorro</title>
+  <title>¡Meta alcanzada!</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
 
@@ -32,209 +32,43 @@
     .macmini-img {
       width: 180px;
       margin-bottom: 30px;
-      filter: none;
       user-select: none;
     }
 
-    .progress-circle {
-      width: 220px;
-      height: 220px;
-      background: conic-gradient(
-        #2e7d32 calc(var(--porcentaje) * 1%),
-        #eeeeee 0
-      );
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto 25px;
-      position: relative;
-      box-shadow: 0 0 15px rgba(0 0 0 / 0.1);
-      transition: background 1.2s ease;
+    .estrella {
+      font-size: 80px;
+      color: gold;
+      animation: brillo 2s infinite alternate ease-in-out;
+      text-shadow: 0 0 15px gold, 0 0 25px #ffcc00, 0 0 40px #ffcc00;
+      margin-bottom: 20px;
     }
 
-    .progress-circle::before {
-      content: '';
-      position: absolute;
-      width: 140px;
-      height: 140px;
-      background: #ffffff;
-      border-radius: 50%;
-      box-shadow: inset 0 0 10px rgba(0 0 0 / 0.1);
-    }
-
-    .progress-text {
-      position: absolute;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: #222222;
-      text-shadow: 0 0 6px rgba(255 255 255 / 0.6);
-      user-select: none;
-    }
-
-    .detalle {
-      font-size: 1.25rem;
-      color: #555555;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      user-select: none;
-      text-shadow: 0 0 3px rgba(255 255 255 / 0.4);
-      margin-bottom: 12px;
-    }
-
-    .frase-humo {
-      font-size: 1rem;
-      color: #444444;
-      font-style: italic;
-      user-select: none;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: humoIn 2s forwards ease-out;
-      max-width: 280px;
-      margin: 0 auto;
-      line-height: 1.3;
-    }
-
-    @keyframes humoIn {
-      0% {
-        opacity: 0;
-        transform: translateY(20px) scale(1.1);
-        filter: blur(4px);
+    @keyframes brillo {
+      from {
+        transform: scale(1);
+        opacity: 0.8;
+        text-shadow: 0 0 10px gold, 0 0 20px #ffcc00;
       }
-      100% {
+      to {
+        transform: scale(1.2);
         opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
+        text-shadow: 0 0 25px gold, 0 0 40px #ffcc00;
       }
     }
 
-    /* Popup estilo */
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      padding: 20px 25px;
-      text-align: center;
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.4s ease;
-      max-width: 280px;
-    }
-
-    .popup.mostrar {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .popup h3 {
-      margin-top: 0;
-      font-size: 1.1rem;
-      color: #222;
-      margin-bottom: 16px;
-    }
-
-    .popup button {
-      background: #2e7d32;
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      font-size: 0.9rem;
-      border-radius: 8px;
-      margin: 0 8px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .popup button:hover {
-      background: #27642a;
-    }
-
-    .popup button.no {
-      background: #888;
-    }
-
-    .popup button.no:hover {
-      background: #666;
+    .mensaje-final {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #444;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <img src="macmini.jpg" alt="Mac Mini" class="macmini-img" />
-    <div class="progress-circle" id="progreso">
-      <div class="progress-text" id="textoProgreso">0%</div>
-    </div>
-    <div class="detalle" id="detalleTexto">0€ de 715€</div>
-    <div class="frase-humo" id="fraseAleatoria"></div>
+    <div class="estrella">★</div>
+    <div class="mensaje-final">¡compradoo🙌</div>
   </div>
-
-<!-- Popup -->
-<div class="popup" id="popupAyuda">
-  <h3>Necesito un nuevo ordenador.<BR>
-    ¿Te gustaría ayudarme a pagar este Mac Mini? <BR><BR>Gracias de antemano.</h3>
-  <button class="si" onclick="window.location.href='https://coff.ee/robernior'">Sí</button>
-  <button class="no" onclick="popup.style.display='none'">No</button>
-</div>
-
-
-  <script>
-    const objetivo = 715;
-    const ahorrado = 335; // ← cambiá este valor con tu ahorro actual
-
-    const frases = [
-      "El arte digital no nace solo del talento, sino del empeño constante y una herramienta que responda a cada trazo como si fuera una extensión del alma.",
-      "Cuando la inspiración llega, necesito que mi lienzo digital esté listo, fluido, sin límites, como mi mente.",
-      "El esfuerzo del artista se mide en noches sin dormir, capas infinitas y la necesidad de que todo funcione sin pedir permiso.",
-      "Para crear sin barreras, necesito que la tecnología desaparezca y deje solo al artista y su obra.",
-      "El esfuerzo de años merece un sistema que no se interponga, sino que acompañe cada clic, cada capa, cada detalle.",
-      "No se trata solo de crear, sino de fluir; por eso necesito una herramienta que esté a la altura de mi ritmo y visión.",
-    ];
-
-    const porcentaje = Math.min((ahorrado / objetivo) * 100, 100);
-    const circulo = document.getElementById('progreso');
-    const texto = document.getElementById('textoProgreso');
-    const detalle = document.getElementById('detalleTexto');
-    const fraseElem = document.getElementById('fraseAleatoria');
-    const popup = document.getElementById('popupAyuda');
-
-    // Animar progreso
-    let current = 0;
-    const duration = 1200;
-    const stepTime = 20;
-    const stepCount = duration / stepTime;
-    const stepIncrement = porcentaje / stepCount;
-
-    function animate() {
-      current += stepIncrement;
-      if (current > porcentaje) current = porcentaje;
-
-      circulo.style.setProperty('--porcentaje', current);
-      texto.textContent = Math.floor(current) + '%';
-
-      if (current < porcentaje) {
-        setTimeout(animate, stepTime);
-      }
-    }
-    animate();
-
-    detalle.textContent = `${ahorrado}€ de ${objetivo}€`;
-
-    function mostrarFraseAleatoria() {
-      const index = Math.floor(Math.random() * frases.length);
-      fraseElem.textContent = frases[index];
-    }
-    mostrarFraseAleatoria();
-
-    // Mostrar popup a los 5 segundos
-    setTimeout(() => {
-      popup.classList.add('mostrar');
-    }, 5000);
-  </script>
 </body>
 </html>
