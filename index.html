@@ -2,73 +2,121 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>¡Meta alcanzada!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cámara en vivo - Pantalla completa HD</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      background: #ffffff;
-      color: #222222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    html, body {
       margin: 0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      user-select: none;
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
     }
 
-    .container {
-      text-align: center;
-      max-width: 320px;
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      background: black;
     }
 
-    .macmini-img {
-      width: 180px;
-      margin-bottom: 30px;
-      user-select: none;
+    #deviceSelect, #changeBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px;
+      font-size: 1rem;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 6px;
     }
 
-    .estrella {
-      font-size: 80px;
-      color: gold;
-      animation: brillo 2s infinite alternate ease-in-out;
-      text-shadow: 0 0 15px gold, 0 0 25px #ffcc00, 0 0 40px #ffcc00;
-      margin-bottom: 20px;
-    }
-
-    @keyframes brillo {
-      from {
-        transform: scale(1);
-        opacity: 0.8;
-        text-shadow: 0 0 10px gold, 0 0 20px #ffcc00;
-      }
-      to {
-        transform: scale(1.2);
-        opacity: 1;
-        text-shadow: 0 0 25px gold, 0 0 40px #ffcc00;
-      }
-    }
-
-    .mensaje-final {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #444;
-      margin-top: 10px;
+    #changeBtn {
+      left: auto;
+      right: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="macmini.jpg" alt="Mac Mini" class="macmini-img" />
-    <div class="estrella">★</div>
-    <div class="mensaje-final">¡compradoo🙌</div>
-  </div>
+  <video id="video" autoplay playsinline controls muted></video>
+
+  <select id="deviceSelect"></select>
+  <button id="changeBtn">Cambiar cámara</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const deviceSelect = document.getElementById('deviceSelect');
+    const changeBtn = document.getElementById('changeBtn');
+    let currentStream = null;
+
+    async function getVideoDevices() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      return devices.filter(device => device.kind === 'videoinput');
+    }
+
+    async function populateDeviceList() {
+      const devices = await getVideoDevices();
+      deviceSelect.innerHTML = '';
+      devices.forEach((device, index) => {
+        const option = document.createElement('option');
+        option.value = device.deviceId;
+        option.text = device.label || `Cámara ${index + 1}`;
+        deviceSelect.appendChild(option);
+      });
+    }
+
+    async function startStream(deviceId = null) {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints = {
+        video: {
+          deviceId: deviceId ? { exact: deviceId } : undefined,
+          width: { ideal: 3840 },
+          height: { ideal: 2160 },
+          frameRate: { ideal: 60 },
+          bitrate: { ideal: 5000000 } // Esto es orientativo; el navegador no siempre lo respeta
+        },
+        audio: false
+      };
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        currentStream = stream;
+
+        // Activar pantalla completa
+        requestFullscreen(video);
+      } catch (error) {
+        alert("No se pudo acceder a la cámara: " + error.message);
+      }
+    }
+
+    function requestFullscreen(element) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    }
+
+    changeBtn.addEventListener('click', () => {
+      const selectedId = deviceSelect.value;
+      startStream(selectedId);
+    });
+
+    async function init() {
+      await populateDeviceList();
+      await startStream();
+    }
+
+    window.addEventListener('load', init);
+  </script>
 </body>
 </html>
